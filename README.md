@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/devborz/lab_05_stack.svg?token=rrbTiACLSyD7Yjcuyygg&branch=master)](https://travis-ci.com/devborz/lab_05_stack)
 # Лабораторная работа №5
 
 ## Задание 1
