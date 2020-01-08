@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <memory>
+#include <new>
 
 template <typename T>
 class Stack1
@@ -58,48 +59,46 @@ Stack1<T>& Stack1<T>::operator=(Stack1<T>&& stack) {
 
 template <typename T>
 void Stack1<T>::push(T&& value) {
-    this->size++;
-    if (this->size > this->capacity && !this->isFull()) {
-        this->capacity *= 2;
+   this->size++;
+  try {
+    if (this->size > this->capacity) {
+      this->capacity *= 2;
 
-        std::unique_ptr<T> new_arr(new T [this->capacity]);
+      std::unique_ptr<T> new_arr(new T[this->capacity]);
 
-        for(int i = 0; i < this->size - 1; i++) {
-            new_arr.get()[i] = this->arr_ptr.get()[i];
-        }
-        new_arr.get()[this->size - 1] = std::move(value);
+      for (int i = 0; i < this->size - 1; i++) {
+        new_arr.get()[i] = this->arr_ptr.get()[i];
+      }
+      new_arr.get()[this->size - 1] = std::move(value);
 
-        this->arr_ptr.swap(new_arr);
-    }
-    else if (this->isFull()) {
-        throw std::logic_error("|Stack1 OVERFLOW|");
-        this->size--;
-    }
-    else this->arr_ptr.get()[this->size - 1] = std::move(value);
-
+      this->arr_ptr.swap(new_arr);
+    } else
+      this->arr_ptr.get()[this->size - 1] = std::move(value);
+  } catch (const std::bad_alloc& ex) {
+    std::cerr << ex.what() << '\n';
+  }
 }
 
 template <typename T>
 void Stack1<T>::push(const T& value) {
-    this->size++;
-    if (this->size > this->capacity && !this->isFull()) {
-        this->capacity *= 2;
+   this->size++;
+  try {
+    if (this->size > this->capacity) {
+      this->capacity *= 2;
 
-        std::unique_ptr<T> new_arr(new T [this->capacity]);
+      std::unique_ptr<T> new_arr(new T[this->capacity]);
 
-        for(int i = 0; i < this->size - 1; i++) {
-            new_arr.get()[i] = this->arr_ptr.get()[i];
-        }
-        new_arr.get()[this->size - 1] = value;
+      for (int i = 0; i < this->size - 1; i++) {
+        new_arr.get()[i] = this->arr_ptr.get()[i];
+      }
+      new_arr.get()[this->size - 1] = value;
 
-        this->arr_ptr.swap(new_arr);
-    }
-    else if (this->isFull()) {
-        throw std::logic_error("|Stack1 OVERFLOW|");
-        this->size--;
-    }
-    else
-        this->arr_ptr.get()[this->size - 1] = value;
+      this->arr_ptr.swap(new_arr);
+    } else
+      this->arr_ptr.get()[this->size - 1] = value;
+  } catch (const std::bad_alloc& ex) {
+    std::cerr << ex.what() << '\n';
+  }
 }
 
 template <typename T>
@@ -115,11 +114,6 @@ void Stack1<T>::pop() {
 template <typename T>
 bool Stack1<T>::isEmpty() const {
      return this->size == 0;
-}
-
-template <typename T>
-bool Stack1<T>::isFull() const {
-     return this->size > 1000;
 }
 
 template <typename T>
